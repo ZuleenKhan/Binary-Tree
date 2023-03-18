@@ -106,13 +106,73 @@ void level_order(struct Node *root){
     }
     
 }
+
+vector<vector<string>> printTree(struct Node* root) {
+        int k = 0 ; 
+        queue<Node *> q ;
+        q.push(root) ;
+    // height of the tree is k 
+        while(!q.empty()){
+        int sz = q.size() ; 
+        for(int i = 0 ;i < sz ;++i){
+            struct Node *p = q.front() ; 
+            q.pop() ; 
+            if(p->left!=nullptr) q.push(p->left) ;
+            if(p->right!=nullptr) q.push(p->right) ;
+           }
+          ++k ; 
+        }
+       k-=1;
+    // inititalising the vector of string    
+     vector<vector<string>> ans ;
+     int width = pow(2,k+1) - 1 ;  
+     for(int i = 0 ;i < k+1 ;++i){
+         vector<string > v ; 
+       for(int j = 0 ;j < width ; ++j )
+         v.emplace_back(" ") ; 
+        
+        ans.emplace_back(v) ; 
+     }
+     queue<pair<Node* , pair<int,int> > >  qr ; 
+     qr.push(make_pair(root , make_pair(0 , (width-1)/2)) ) ;
+      ans[0][(width-1)/2] = to_string(root->data) ;
+
+     while(!qr.empty()){
+        int sz = qr.size() ; 
+        for(int i = 0 ;i < sz ;++i){
+            struct Node *p = qr.front().first ;
+             int a = (qr.front().second).first ;
+             int b = (qr.front().second).second ; 
+             qr.pop() ; 
+            if(p->left!=nullptr) {
+            qr.push(make_pair(p->left , make_pair(a+1 , b-pow(2,k-a-1) )) ) ;
+            ans[a+1][b-pow(2,k-a-1)]  = to_string(p->left->data); }
+            if(p->right!=nullptr) {
+              qr.push(make_pair(p->right , make_pair(a+1 , b+pow(2,k-a-1) )) ) ;  
+               ans[a+1][b+pow(2,k-a-1)]  = to_string(p->right->data);
+                }
+           }
+    
+    }
+       
+     return ans ; 
+}
+
+
 signed
 main ()
 {
 
      struct Node *root = NULL ; 
      root = create(root) ; 
-     level_order(root) ; 
-    
+     vector<vector<string> > ans ; 
+     ans = printTree(root) ; 
+     // Visualizing the structure of a Tree. 
+     for(int i = 0 ;i < ans.size() ; ++i){
+         
+        for(int j = 0 ; j < ans[i].size() ;++j) cout << ans[i][j]  ; 
+        
+        cout << next ; 
+     }
     return 0;
 }
